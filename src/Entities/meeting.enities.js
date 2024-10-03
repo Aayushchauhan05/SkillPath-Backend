@@ -1,6 +1,6 @@
-const { Schema, default: mongoose, model } = require("mongoose");
+const mongoose = require("mongoose");
 
- const meetSchema= new Schema({
+ const meetSchema= new mongoose.Schema({
     mentorId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
@@ -14,5 +14,5 @@ type:String
     }
  })
 
- const meet= new model("meet",meetSchema);
- module.exports= meet;
+ const Meet=  mongoose.model("meet",meetSchema);
+ module.exports= Meet;

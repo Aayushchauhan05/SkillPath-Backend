@@ -3,26 +3,30 @@ const MeetServices = require("../Services/meet.service")
 
 module.exports= class MeetController{
     constructor(){
+        console.log("MeetController initialized");
         this.meetService= new MeetServices;
     }
 
-    async createMeet(request,response){
+    createMeet= async (request,response)=>{
 
         console.log("Controller->meet.controller.js->createMeet");
 
         try {
-            const {mentorId,menteeId}=req.query;
+            const {mentorId,menteeId}=request.query;
+            console.log({mentorId,menteeId})
             const data= await this.meetService.createMeet(mentorId,menteeId,request.body)
-            response.send(statusConstant.created).send(data)
+            console.log(data)
+            response.status(statusConstant.created).send(data)
         } catch (error) {
-            if(error.message.contains("mentor not found")){
-                response.send(statusConstant.notFound).send({message:"mentor not found"})
+            console.log(error)
+            if(error.message=="mentor not found"){
+                response.status(statusConstant.notFound).send({message:"mentor not found"})
             }
-            else if(error.message.contains("mentee not found")){
-                response.send(statusConstant.notFound).send({message:"mentee not found"})
+            else if(error.message=="mentee not found"){
+                response.status(statusConstant.notFound).send({message:"mentee not found"})
             }
             else{
-                response.send(statusConstant.serverError).send({message:"Internal server error"})
+                response.status(statusConstant.serverError).send({message:"Internal server error"})
             }
                
         }

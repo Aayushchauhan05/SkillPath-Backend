@@ -1,12 +1,10 @@
-const meet = require("../Entities/meeting.enities")
+const Meet = require("../Entities/meeting.enities")
 
 module.exports= class meetDao{
 
-    constructor(){
-        this.model= new meet;
-    }
+   
 
-    async createMeet(data){
-        return await this.model.create(data)
+    createMeet=async (data)=>{
+        return Meet.create(data)
     }
 }

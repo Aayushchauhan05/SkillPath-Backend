@@ -5,7 +5,7 @@ module.exports= class userDao {
     async createUser(data){
 return this.model.create(data)
     }
-    async findUser(email){
-return this.model.findOne({email:email})
+    async findUser(id){
+return this.model.findById(id)
     }
 }
