@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");  // Import CORS
+const cors = require("cors"); 
 const connectDb = require("./src/Db/db.connection");
 const setupRoutes = require("./src/RouteHandler/user.routehandler");
 

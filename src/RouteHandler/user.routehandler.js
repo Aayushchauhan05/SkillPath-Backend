@@ -1,12 +1,8 @@
 const express = require("express");
 const authRoutes = require("../Routes/Auth.route");
-const quizRoutes= require("../Routes/quiz.route")
-const courseRoutes= require("../Routes/course.route")
-const applicationRoutes = require("../Routes/application.routes");
 
+const meetRoutes= require("../Routes/meet.route")
 module.exports = (app) => {
   app.use("/Auth", authRoutes);
-  app.use("/quiz",quizRoutes)
-  app.use("/course",courseRoutes)
-  app.use("/application", applicationRoutes);
+  app.use("/meet",meetRoutes)
 };
