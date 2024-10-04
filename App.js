@@ -19,6 +19,9 @@ app.use(express.json());
 const BACKEND_PORT=process.env.PORT;
 console.log(process.env.PORT)
 setupRoutes(app);
+app.get("/", (req, res) => {
+    res.send("Hello from Express!");
+  });
 connectDb().then(() => {
     app.listen(BACKEND_PORT, () => {
         console.log(`Server is connected on port ${BACKEND_PORT}`);
