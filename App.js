@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors"); 
 const connectDb = require("./src/Db/db.connection");
 const setupRoutes = require("./src/RouteHandler/user.routehandler");
+require('dotenv').config();
 
 const app = express();
 
@@ -15,11 +16,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
+const BACKEND_PORT=process.env.PORT;
+console.log(process.env.PORT)
 setupRoutes(app);
 connectDb().then(() => {
-    app.listen(5000, () => {
-        console.log("Server is connected on port 5000");
+    app.listen(BACKEND_PORT, () => {
+        console.log(`Server is connected on port ${BACKEND_PORT}`);
     });
 }).catch((error) => {
     console.log("Internal server error due to connection failure:", error);

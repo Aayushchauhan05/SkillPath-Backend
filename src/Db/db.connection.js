@@ -1,5 +1,6 @@
 const mongoose=require("mongoose")
-const Uri="mongodb+srv://Aayush:aayush@test.0orf7.mongodb.net/?retryWrites=true&w=majority&appName=Test"
+require('dotenv').config()
+const Uri=process.env.DB_CONNECTION
 const connectDb=  async ()=>{
     try {
         await mongoose.connect(Uri)
