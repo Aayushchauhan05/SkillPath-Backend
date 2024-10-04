@@ -1,7 +1,6 @@
 const express = require("express");
 const userController = require("../Controller/user.controller");
 const { CREATE_USER, LOGIN_USER } = require("../constant/user.constant");
-const { CREATE_TEACHER, LOGIN_TEACHER } = require("../constant/teacher.constant");
 
 const router = express.Router();
 
