@@ -1,7 +1,9 @@
 const {google}= require("googleapis")
 const fs=require("fs");
  const path= require("path")
+
  const { authenticate } = require('@google-cloud/local-auth');
+const { v4 } = require("uuid");
 require("dotenv").config()
  const SCOPES = ['https://www.googleapis.com/auth/calendar.events'];
  
@@ -51,7 +53,7 @@ const googleCredentials = {
           },
           conferenceData: {
             createRequest: {
-              requestId: 'some-random-string',
+              requestId: `${v4}`,
               conferenceSolutionKey: {
                 type: 'hangoutsMeet',
               },
