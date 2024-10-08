@@ -15,18 +15,30 @@ const userSchema = new mongoose.Schema({
     required: true,
   
   },
-  course:[{
-    type:mongoose.Schema.ObjectId,
-ref:"courses"
-  }],
-  recentLesson:[{
-    type:mongoose.Schema.ObjectId,
-    ref:"courses"
-  }],
-  quiz:{
-type:mongoose.Schema.ObjectId,
-ref:"quiz"
+  education:{
+type:Map,
+of:new mongoose.Schema ({
+institution:{
+  type:String,
+
+},
+year:{type:mongoose.Schema.Types.Date}
+})
   },
+  experience:{
+    type:Map,
+    of:new mongoose.Schema ({
+    companyName:{
+      type:String,
+    
+    },
+    projects:[{
+type:String
+    }],
+    startDate:{type:mongoose.Schema.Types.Date},
+    endDate:{type:mongoose.Schema.Types.Date},
+    })
+      },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -36,6 +48,7 @@ ref:"quiz"
     
       
   }
+  
 
 });
 

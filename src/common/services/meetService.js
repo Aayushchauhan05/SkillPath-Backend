@@ -2,15 +2,27 @@ const {google}= require("googleapis")
 const fs=require("fs");
  const path= require("path")
  const { authenticate } = require('@google-cloud/local-auth');
-
+require("dotenv").config()
  const SCOPES = ['https://www.googleapis.com/auth/calendar.events'];
  
- const CREDENTIALS_PATH = path.join(__dirname, '../../../credentials.json');
- const TOKEN_PATH = path.join(__dirname, '../../../token.json');
+//  const CREDENTIALS_PATH = path.join(__dirname, '../../../credentials.json');
+//  const TOKEN_PATH = path.join(__dirname, '../../../token.json');
+const googleCredentials = {
+  web: {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      project_id: process.env.GOOGLE_PROJECT_ID,
+      auth_uri: process.env.GOOGLE_AUTH_URI,
+      token_uri: process.env.GOOGLE_TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uris: process.env.GOOGLE_REDIRECT_URIS.split(','),
+      javascript_origins: process.env.GOOGLE_JAVASCRIPT_ORIGINS.split(',')
+  }
+};
  async function getAuthClient(){
 
     const auth = await authenticate({
-        keyfilePath: CREDENTIALS_PATH,
+        keyfilePath: googleCredentials,
         scopes: SCOPES,
       });
     

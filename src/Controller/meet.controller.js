@@ -3,8 +3,7 @@ const MeetServices = require("../Services/meet.service")
 
 module.exports= class MeetController{
     constructor(){
-        console.log("MeetController initialized");
-        this.meetService= new MeetServices;
+        this.meetService= new MeetServices();
     }
 
     createMeet= async (request,response)=>{
