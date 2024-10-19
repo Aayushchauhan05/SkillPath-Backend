@@ -3,8 +3,9 @@ const cors = require("cors");
 const connectDb = require("./src/Db/db.connection");
 const setupRoutes = require("./src/RouteHandler/user.routehandler");
 require('dotenv').config();
+const {app,io,server}= require("./chat-backend/chat-App")
 
-const app = express();
+
 
 const corsOptions = {
     origin: '*', 
@@ -23,7 +24,7 @@ app.get("/", (req, res) => {
     res.send("Hello from Express!");
   });
 connectDb().then(() => {
-    app.listen(BACKEND_PORT, () => {
+    server.listen(BACKEND_PORT, () => {
         console.log(`Server is connected on port ${BACKEND_PORT}`);
     });
 }).catch((error) => {
