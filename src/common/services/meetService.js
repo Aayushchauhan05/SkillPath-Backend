@@ -67,7 +67,7 @@ const googleCredentials = {
       return response.data;
     } catch (error) {
       console.error('Error creating meeting:', error);
-      throw error;  // Rethrow the error to handle it upstream
+      throw error;  
     }
   }
   

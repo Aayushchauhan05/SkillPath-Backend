@@ -3,10 +3,12 @@ const ChatServices = require("../Services/chat.services");
 module.exports = class ChatController {
     constructor() {
         this.chatServices = new ChatServices();
+        console.log("ChatServices instance created:", this.chatServices);
     }
 
-    async createChat(req, res) {
+     createChat= async(req, res) =>{
         try {
+            console.log("controller",req.body)
             const chat = await this.chatServices.createChat(req.body);
             res.status(201).json(chat);
         } catch (error) {

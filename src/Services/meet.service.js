@@ -1,129 +1,98 @@
-const statusConstant = require("../constant/status.constant");
-const MeetDao = require("../Dao/meet.dao");
+const { getAuthClient, createMeeting } = require("../common/services/meetService");
+const meetDao = require("../Dao/meet.dao");
+const userDao = require("../Dao/user.dao");
 
-
-module.exports = class MeetController {
+module.exports = class MeetServices {
     constructor() {
-        this. meetDao = new MeetDao();
+        this.meetDao = new meetDao();
+        this.userDao = new userDao();
     }
 
-    createMeet = async (request, response) => {
-        console.log("Controller->meet.controller.js->createMeet");
+    async createMeet(mentorId, menteeId, data) {
+        const auth = await getAuthClient();
+        const responsedata = await createMeeting(auth, data);
 
-        try {
-            const { mentorId, menteeId } = request.query;
-            console.log({ mentorId, menteeId });
-            const data = await this. meetDao.createMeet(mentorId, menteeId, request.body);
-            console.log(data);
-            response.status(statusConstant.created).send(data);
-        } catch (error) {
-            console.log(error);
-            if (error.message === "Mentor not found") {
-                response.status(statusConstant.notFound).send({ message: "Mentor not found" });
-            } else if (error.message === "Mentee not found") {
-                response.status(statusConstant.notFound).send({ message: "Mentee not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+        await this.meetDao.createMeet({
+            mentorId: mentorId,
+            menteeId: menteeId,
+            meetLink: responsedata.hangoutLink,
+            ...data
+        });
+
+        return {
+            message: 'Meeting created successfully',
+            meetLink: responsedata.hangoutLink,
+            eventDetails: responsedata,
+        };
+    }
+
+    async getMeetById(id) {
+        const meeting = await this.meetDao.getMeetById(id);
+        if (!meeting) {
+            throw new Error("Meeting not found");
         }
-    };
+        return meeting;
+    }
 
-    getMeetById = async (request, response) => {
-        const meetId = request.params.id;
+    async getAllMeet() {
+        return this.meetDao.getAllMeet();
+    }
 
-        try {
-            const meet = await this. meetDao.getMeetById(meetId);
-            response.status(statusConstant.success).send(meet);
-        } catch (error) {
-            if (error.message === "Meeting not found") {
-                response.status(statusConstant.notFound).send({ message: "Meeting not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+    async updateMeet(id, data) {
+        const updatedMeeting = await this.meetDao.updateMeet(id, data);
+        if (!updatedMeeting) {
+            throw new Error("Meeting not found");
         }
-    };
+        return updatedMeeting;
+    }
 
-    getAllMeets = async (request, response) => {
-        try {
-            const meets = await this. meetDao.getAllMeets();
-            response.status(statusConstant.success).send(meets);
-        } catch (error) {
-            response.status(statusConstant.serverError).send({ message: "Internal server error" });
+    async deleteMeet(id) {
+        const deletedMeeting = await this.meetDao.deleteMeet(id);
+        if (!deletedMeeting) {
+            throw new Error("Meeting not found");
         }
-    };
+        return {
+            message: 'Meeting deleted successfully'
+        };
+    }
 
-    updateMeet = async (request, response) => {
-        const meetId = request.params.id;
+    async getMeetsByMentorId(mentorId) {
+        return this.meetDao.getMeetsByMentorId(mentorId);
+    }
 
-        try {
-            const updatedMeet = await this. meetDao.updateMeet(meetId, request.body);
-            response.status(statusConstant.success).send(updatedMeet);
-        } catch (error) {
-            if (error.message === "Meeting not found") {
-                response.status(statusConstant.notFound).send({ message: "Meeting not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+    async getMeetsByMenteeId(menteeId) {
+        return this.meetDao.getMeetsByMenteeId(menteeId);
+    }
+
+    async getMeetByMentorAndMentee(mentorId, menteeId) {
+        const meeting = await this.meetDao.getMeetByMentorAndMentee(mentorId, menteeId);
+        if (!meeting) {
+            throw new Error("Meeting not found");
         }
-    };
+        return meeting;
+    }
 
-    deleteMeet = async (request, response) => {
-        const meetId = request.params.id;
-
-        try {
-            const deletedMeet = await this. meetDao.deleteMeet(meetId);
-            response.status(statusConstant.success).send({ message: "Meeting deleted successfully", data: deletedMeet });
-        } catch (error) {
-            if (error.message === "Meeting not found") {
-                response.status(statusConstant.notFound).send({ message: "Meeting not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+    async getAttendeesByMeetId(id) {
+        const attendees = await this.meetDao.getAttendeesByMeetId(id);
+        if (!attendees) {
+            throw new Error("Meeting not found");
         }
-    };
+        return attendees;
+    }
 
-    getMeetsByMentorId = async (request, response) => {
-        const mentorId = request.params.id;
-
-        try {
-            const meets = await this. meetDao.getMeetsByMentorId(mentorId);
-            response.status(statusConstant.success).send(meets);
-        } catch (error) {
-            if (error.message === "Mentor not found") {
-                response.status(statusConstant.notFound).send({ message: "Mentor not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+    async updateAttendees(id, attendees) {
+        const updatedMeeting = await this.meetDao.updateAttendees(id, attendees);
+        if (!updatedMeeting) {
+            throw new Error("Meeting not found");
         }
-    };
+        return updatedMeeting;
+    }
 
-    getMeetsByMenteeId = async (request, response) => {
-        const menteeId = request.params.id;
-
-        try {
-            const meets = await this. meetDao.getMeetsByMenteeId(menteeId);
-            response.status(statusConstant.success).send(meets);
-        } catch (error) {
-            if (error.message === "Mentee not found") {
-                response.status(statusConstant.notFound).send({ message: "Mentee not found" });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
+    async updateConferenceData(id, conferenceData) {
+        const updatedMeeting = await this.meetDao.updateConferenceData(id, conferenceData);
+        if (!updatedMeeting) {
+            throw new Error("Meeting not found");
         }
-    };
-
-    getMeetByMentorAndMentee = async (request, response) => {
-        const { mentorId, menteeId } = request.params;
-
-        try {
-            const meet = await this. meetDao.getMeetByMentorAndMentee(mentorId, menteeId);
-            response.status(statusConstant.success).send(meet);
-        } catch (error) {
-            if (error.message === "Mentor not found" || error.message === "Mentee not found") {
-                response.status(statusConstant.notFound).send({ message: error.message });
-            } else {
-                response.status(statusConstant.serverError).send({ message: "Internal server error" });
-            }
-        }
-    };
-};
+        return updatedMeeting;
+    }
+}

@@ -34,4 +34,17 @@ module.exports = class MeetDao {
   async getMeetByMentorAndMentee(mentorId, menteeId) {
     return this.model.findOne({ mentorId, menteeId });
   }
+
+  async getAttendeesByMeetId(id) {
+    const meet = await this.model.findById(id);
+    return meet ? meet.attendees : [];
+  }
+
+  async updateAttendees(id, attendees) {
+    return this.model.findByIdAndUpdate(id, { attendees }, { new: true });
+  }
+
+  async updateConferenceData(id, conferenceData) {
+    return this.model.findByIdAndUpdate(id, { conferenceData }, { new: true });
+  }
 };
