@@ -4,12 +4,12 @@ const { v4: uuidv4 } = require("uuid");
 const meetSchema = new mongoose.Schema({
   mentorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
     required: true,
   },
   menteeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
     required: true,
   },
   meetLink: {

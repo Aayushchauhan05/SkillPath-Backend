@@ -11,10 +11,11 @@ module.exports = class UserService {
       throw new Error("User Already Exists");
     }
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    // const hashedPassword = await bcrypt.hash(userData.password, 10);
     const data = await this.userdao.createUser({
+      _id:userData._id,
       ...userData,
-      password: hashedPassword,
+      // password: hashedPassword,
     });
 
     if (!data) {
