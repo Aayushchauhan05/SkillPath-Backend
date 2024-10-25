@@ -3,16 +3,16 @@ const { Schema, model } = require("mongoose");
 const chatSchema= new Schema({
     senderId:{
         type:String,
-        ref:"user"
+        ref:"User"
     },
     receiverId:{
         type:String,
-        ref:"user"
+        ref:"User"
     },
     message:{
         sender:{
             type:String,
-        ref:"user"
+        ref:"User"
         },
         text:{
             type:String

@@ -3,12 +3,12 @@ const ChatServices = require("../Services/chat.services");
 module.exports = class ChatController {
     constructor() {
         this.chatServices = new ChatServices();
-        console.log("ChatServices instance created:", this.chatServices);
+       
     }
 
      createChat= async(req, res) =>{
         try {
-            console.log("controller",req.body)
+            
             const chat = await this.chatServices.createChat(req.body);
             res.status(201).json(chat);
         } catch (error) {
@@ -36,9 +36,9 @@ module.exports = class ChatController {
         }
     }
 
-    async getChats(req, res) {
+ getChats=async (req, res)=> {
         try {
-            const { senderId, receiverId } = req.query;
+            const { senderId, receiverId } = req.params;
             const chats = await this.chatServices.getChats(senderId, receiverId);
             res.status(200).json(chats);
         } catch (error) {
