@@ -21,7 +21,7 @@ module.exports = class ListingDao {
     }
 
     async findAllListings() {
-        return this.model.find();
+        return this.model.find().populate("mentorId").sort({ createdAt: -1 });
     }
 
     async updateSessionStatus(id, status) {

@@ -2,7 +2,7 @@ const { Schema,model } = require("mongoose");
 
 const listingSchema = new Schema({
     mentorId: {
-        type: Schema.Types.ObjectId, 
+        type: String, 
         ref: "User"
     },
     domain: {
@@ -28,6 +28,6 @@ const listingSchema = new Schema({
     end: {
         type: Date
     }
-});
+},{timestamps:true});
 const listing=model("Listing", listingSchema)
 module.exports =listing;
