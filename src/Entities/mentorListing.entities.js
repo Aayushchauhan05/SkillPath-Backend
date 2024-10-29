@@ -19,7 +19,7 @@ const listingSchema = new Schema({
     },
     sessionStatus: {
         type: String,
-        enum: ["active", "inactive"],
+        enum: ["active", "completed","decline"],
         default: "active"
     },
     start: {
