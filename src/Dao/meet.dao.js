@@ -24,7 +24,7 @@ module.exports = class MeetDao {
   }
 
   async getMeetsByMentorId(mentorId) {
-    return this.model.find({ mentorId });
+    return this.model.find({ mentorId }).populate("mentorId").populate("menteeId");
   }
 
   async getMeetsByMenteeId(menteeId) {

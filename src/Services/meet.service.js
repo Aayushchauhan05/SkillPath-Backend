@@ -1,4 +1,4 @@
-const { getAuthClient, createMeeting } = require("../common/services/meetService");
+const { getAuthClient, createMeeting, getAuthUrl } = require("../common/services/meetService");
 const meetDao = require("../Dao/meet.dao");
 const userDao = require("../Dao/user.dao");
 
@@ -8,23 +8,34 @@ module.exports = class MeetServices {
         this.userDao = new userDao();
     }
 
-    async createMeet(mentorId, menteeId, data) {
-        const auth = await getAuthClient();
-        const responsedata = await createMeeting(auth, data);
-
+    async  createMeet(mentorId, menteeId, eventData) {
+        
+    
+        
+        // if (!authUrl) {
+        //     throw new Error("Authentication URL could not be generated.");
+        // }
+        console.log("hitting api service")
+    
+        
+        const meetingData = await createMeeting(eventData);
+    
         await this.meetDao.createMeet({
-            mentorId: mentorId,
-            menteeId: menteeId,
-            meetLink: responsedata.hangoutLink,
-            ...data
+            mentorId,
+            menteeId,
+            meetLink: meetingData.hangoutLink,
+            ...eventData,
+            tokens:"",
+            code:""
         });
-
+    
         return {
             message: 'Meeting created successfully',
-            meetLink: responsedata.hangoutLink,
-            eventDetails: responsedata,
+            meetLink: meetingData.hangoutLink,
+            eventDetails: meetingData,
         };
     }
+    
 
     async getMeetById(id) {
         const meeting = await this.meetDao.getMeetById(id);
@@ -57,6 +68,10 @@ module.exports = class MeetServices {
     }
 
     async getMeetsByMentorId(mentorId) {
+        const mentor = await this.meetDao.getMeetsByMentorId(mentorId);
+        if (!mentor) {
+            throw new Error("mentor not found");
+        }
         return this.meetDao.getMeetsByMentorId(mentorId);
     }
 

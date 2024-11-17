@@ -1,3 +1,4 @@
+const { getReceiverSocketId } = require("../../chat-backend/chat-App");
 const ChatDao = require("../Dao/chat.dao");
 
 module.exports = class ChatServices {
@@ -11,6 +12,10 @@ module.exports = class ChatServices {
         }
         console.log(body)
         const chat = await this.chatDao.createChat(body);
+        const receiverSocketId= getReceiverSocketId(body.receiverId)
+        if(receiverSocketId){
+io.to(receiverSocketId).emit("newmessage",body.message)
+        }
         if (!chat) {
             throw new Error('Chat creation failed');
         }

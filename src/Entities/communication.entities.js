@@ -2,12 +2,12 @@ const { Schema, model } = require("mongoose");
 
 const communicationSchema= new Schema({
     userId:{
-        type:Schema.Types.ObjectId,
+        type:String,
         ref:"User"
 
     },
 communication:[{
-    type:Schema.Types.ObjectId,
+    type:String,
     ref:"chat"
 }]
 },{timestamps:true});

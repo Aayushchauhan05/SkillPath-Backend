@@ -3,12 +3,12 @@ const { v4: uuidv4 } = require("uuid");
 
 const meetSchema = new mongoose.Schema({
   mentorId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User",
     required: true,
   },
   menteeId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User",
     required: true,
   },
@@ -23,24 +23,12 @@ const meetSchema = new mongoose.Schema({
     type: String,
   },
   start: {
-    dateTime: {
-      type: Date,
-      required: true,
-    },
-    timeZone: {
-      type: String,
-      default: "America/Los_Angeles",
-    },
+   type: Date,
+      
   },
   end: {
-    dateTime: {
-      type: Date,
-      required: true,
-    },
-    timeZone: {
-      type: String,
-      default: "America/Los_Angeles",
-    },
+   type: Date,
+      
   },
   conferenceData: {
     createRequest: {

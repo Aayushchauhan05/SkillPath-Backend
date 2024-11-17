@@ -14,9 +14,15 @@ const io = new Server(server, {
 });
 
 
+
 const activeUsers = new Map();
 
-
+ const getReceiverSocketId=(receiverId)=>{
+  return activeUsers.set(receiverId, {
+    socketId: socket.id,
+    timestamp: Date.now()
+  })
+  }
 const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [userId, userData] of activeUsers.entries()) {
@@ -74,4 +80,4 @@ process.on('SIGTERM', () => {
   io.close();
 });
 
-module.exports = { io, app, server };
+module.exports = { io, app, server,getReceiverSocketId };
