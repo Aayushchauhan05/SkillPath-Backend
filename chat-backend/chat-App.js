@@ -13,16 +13,13 @@ const io = new Server(server, {
   },
 });
 
-
-
 const activeUsers = new Map();
 
- const getReceiverSocketId=(receiverId)=>{
-  return activeUsers.set(receiverId, {
-    socketId: socket.id,
-    timestamp: Date.now()
-  })
-  }
+const getReceiverSocketId = (receiverId) => {
+  const user = activeUsers.get(receiverId);
+  return user ? user.socketId : null;
+}
+
 const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [userId, userData] of activeUsers.entries()) {
@@ -31,7 +28,7 @@ const cleanupInterval = setInterval(() => {
       activeUsers.delete(userId);
     }
   }
-}, 1000 * 60 * 30); 
+}, 1000 * 60 * 30);
 
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
@@ -42,10 +39,8 @@ io.on("connection", (socket) => {
     return;
   }
 
-  
   const existingConnection = activeUsers.get(userId);
   if (existingConnection && existingConnection.socketId !== socket.id) {
-
     const existingSocket = io.sockets.sockets.get(existingConnection.socketId);
     if (existingSocket) {
       console.log(`Disconnecting previous connection for user ${userId}`);
@@ -64,7 +59,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`User disconnected - ID: ${userId}, Socket: ${socket.id}`);
     
-  
     const userData = activeUsers.get(userId);
     if (userData && userData.socketId === socket.id) {
       activeUsers.delete(userId);
@@ -74,10 +68,9 @@ io.on("connection", (socket) => {
   });
 });
 
-
 process.on('SIGTERM', () => {
   clearInterval(cleanupInterval);
   io.close();
 });
 
-module.exports = { io, app, server,getReceiverSocketId };
+module.exports = { io, app, server, getReceiverSocketId };

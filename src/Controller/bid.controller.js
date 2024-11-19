@@ -69,7 +69,7 @@ module.exports = class BidController {
         console.log("Controller->bid.controller.js->getBidsByMentee");
 
         try {
-            const {mentee_id } = request.params;
+            const {mentee_id} = request.params;
             console.log("hi>>>>>",mentee_id);
             const data = await this.bidService.getBidsByMenteeId(mentee_id);
             console.log(data);

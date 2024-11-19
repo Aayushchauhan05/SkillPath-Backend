@@ -11,13 +11,15 @@ module.exports = class ConversationDao {
     async findConversation(query) {
         return await this.model.findOne(query);
     }
-    async upsertConversation({ userId, conversation }) {
-        return this.model.updateOne(
-          { userId }, 
-          { $addToSet: { conversation: { $each: conversation } } }, 
-          { upsert: true } 
+    async upsertConversation(conversation) {
+        const result = await this.model.findOneAndUpdate(
+            { userId: conversation.userId },
+            { $addToSet: { conversations: { $each: conversation.conversations } } },
+            { upsert: true, new: true }
         );
-      }
+        return result;
+    }
+    
 
     async updateConversation(conversationId, update) {
         return this.model.findByIdAndUpdate(conversationId, update, { new: true });

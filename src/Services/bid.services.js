@@ -37,22 +37,21 @@ module.exports = class BidServices {
     }
 
     async updateBidStatus(id, data) {
-      
         if (data.status === "accepted") {
             const mentorToMenteeConversation = await this.conversationDao.findConversation({
                 userId: data.mentorId,
-                conversation: { $in: [data.menteeId] },
+                conversations: data.menteeId,
             });
     
             const menteeToMentorConversation = await this.conversationDao.findConversation({
                 userId: data.menteeId,
-                conversation: { $in: [data.mentorId] },
+                conversations: data.mentorId,
             });
     
             if (!mentorToMenteeConversation) {
                 const mentorToMentee = {
                     userId: data.mentorId,
-                    conversation: { $in: [data.mentorId] },
+                    conversations: [data.menteeId],
                 };
                 await this.conversationDao.upsertConversation(mentorToMentee);
             }
@@ -60,7 +59,7 @@ module.exports = class BidServices {
             if (!menteeToMentorConversation) {
                 const menteeToMentor = {
                     userId: data.menteeId,
-                    conversation: [data.mentorId],
+                    conversations: [data.mentorId],
                 };
                 await this.conversationDao.upsertConversation(menteeToMentor);
             }
@@ -69,9 +68,10 @@ module.exports = class BidServices {
         if (!updatedBid) {
             throw new Error("Bid not found");
         }
-
+    
         return updatedBid;
     }
+    
 
     async deleteBid(id) {
         const deletedBid = await this.bidDao.deleteBid(id);

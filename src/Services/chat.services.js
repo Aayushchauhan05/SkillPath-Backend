@@ -1,6 +1,6 @@
 const { getReceiverSocketId } = require("../../chat-backend/chat-App");
 const ChatDao = require("../Dao/chat.dao");
-
+const {io}=require("../../chat-backend/chat-App")
 module.exports = class ChatServices {
     constructor() {
         this.chatDao = new ChatDao();
@@ -10,17 +10,22 @@ module.exports = class ChatServices {
         if (!body || !body.senderId || !body.receiverId || !body.message) {
             throw new Error('Invalid data for creating a chat');
         }
-        console.log(body)
+        console.log(body);
         const chat = await this.chatDao.createChat(body);
-        const receiverSocketId= getReceiverSocketId(body.receiverId)
-        if(receiverSocketId){
-io.to(receiverSocketId).emit("newmessage",body.message)
+    
+       
+        const receiverSocketId = getReceiverSocketId(body.receiverId);
+        if (receiverSocketId) {
+           
+            io.to(receiverSocketId).emit("newmessage", body.message);
         }
+    
         if (!chat) {
             throw new Error('Chat creation failed');
         }
         return chat;
     }
+    
 
     async updateChat(chatId, update) {
         if (!chatId || !update) {

@@ -15,8 +15,20 @@ module.exports= class ChatDao{
     async deleteChat (chatId){
         return this.model.findByIdAndDelete(chatId);
     }
-    async getChats (senderId,receiverId){
-        return this.model.find({senderId,receiverId}).populate("receiverId");
+    async getChats(senderId, receiverId) {
+        return this.model.find({
+            $or: [
+                {
+                    senderId: senderId,
+                    receiverId: receiverId
+                },
+                {
+                    senderId: receiverId,
+                    receiverId: senderId
+                }
+            ]
+        }).populate("receiverId");
     }
+    
     
 }
