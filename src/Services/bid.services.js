@@ -1,15 +1,16 @@
 const bidDao = require("../Dao/bid.dao");
+const ConversationDao = require("../Dao/conversation.dao");
 const userDao = require("../Dao/user.dao");
 
 module.exports = class BidServices {
     constructor() {
         this.bidDao = new bidDao();
         this.userDao = new userDao();
-        // this.conversationDao=new conve
+        this.conversationDao=new ConversationDao()
     }
 
     async createBid(mentorId, bidId, data) {
-        console.log("Creating bid...");
+        console.log("Creating bid...",data);
 
         const newBid = await this.bidDao.createBid({
             mentorId,
@@ -36,6 +37,34 @@ module.exports = class BidServices {
     }
 
     async updateBidStatus(id, data) {
+      
+        if (data.status === "accepted") {
+            const mentorToMenteeConversation = await this.conversationDao.findConversation({
+                userId: data.mentorId,
+                conversation: { $in: [data.menteeId] },
+            });
+    
+            const menteeToMentorConversation = await this.conversationDao.findConversation({
+                userId: data.menteeId,
+                conversation: { $in: [data.mentorId] },
+            });
+    
+            if (!mentorToMenteeConversation) {
+                const mentorToMentee = {
+                    userId: data.mentorId,
+                    conversation: { $in: [data.mentorId] },
+                };
+                await this.conversationDao.upsertConversation(mentorToMentee);
+            }
+    
+            if (!menteeToMentorConversation) {
+                const menteeToMentor = {
+                    userId: data.menteeId,
+                    conversation: [data.mentorId],
+                };
+                await this.conversationDao.upsertConversation(menteeToMentor);
+            }
+        }
         const updatedBid = await this.bidDao.updateBid(id, data);
         if (!updatedBid) {
             throw new Error("Bid not found");

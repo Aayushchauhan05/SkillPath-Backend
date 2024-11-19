@@ -1,5 +1,5 @@
 const Bid = require("../Entities/bid.entities"); // Adjust the path as needed
-
+const mongoose = require('mongoose');
 module.exports = class BidDao {
   model = Bid;
 
@@ -24,15 +24,31 @@ module.exports = class BidDao {
   }
 
   async getBidsByMentorId(mentorId) {
+    
     return this.model.find({ mentorId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
   }
   async getBidsByMenteeId(menteeId) {
-    return this.model.find({ menteeId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    console.log(menteeId)
+    if (!menteeId || menteeId.trim() === '') {
+      throw new Error("Invalid menteeId format");
+  }
+    return this.model.find({menteeId:menteeId}).populate("mentorId").populate("menteeId").populate("meetId");
   }
   async getBidsByListingId(listingId) {
-    return this.model.find({ listingId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model
+      .find({
+        listingId,
+        $and: [
+          { status: { $ne: "accepted" } },
+          { status: { $ne: "rejected" } },
+        ],
+      })
+      .populate("mentorId")
+      .populate("menteeId")
+      .populate("listingId")
+      .populate("meetId");
   }
-
+  
   async getBidsByBidId(bidId) {
     return this.model.find({ bidId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
   }

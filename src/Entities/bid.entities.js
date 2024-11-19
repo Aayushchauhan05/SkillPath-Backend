@@ -44,6 +44,7 @@ type: String,
   },
   meetId:{
     type:String,
+    ref:"chat"
   },
   status:{
 type:String,

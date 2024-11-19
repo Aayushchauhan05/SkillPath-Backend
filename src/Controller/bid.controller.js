@@ -48,11 +48,29 @@ module.exports = class BidController {
             }
         }
     }
+    getBidsByListing = async (request, response) => {
+        console.log("Controller->bid.controller.js->getBidsByListing");
+
+        try {
+            const { listing_id } = request.params;
+            const data = await this.bidService.getBidsByListingId(listing_id);
+            console.log(data);
+            response.status(statusConstant.success).send(data);
+        } catch (error) {
+            console.log(error);
+            if (error.message === "No bids found for this listing_id") {
+                response.status(statusConstant.notFound).send({ message: "No bids found for this listing_id" });
+            } else {
+                response.status(statusConstant.serverError).send({ message: "Internal server error" });
+            }
+        }
+    }
     getBidsByMentee = async (request, response) => {
         console.log("Controller->bid.controller.js->getBidsByMentee");
 
         try {
-            const { mentee_id } = request.params;
+            const {mentee_id } = request.params;
+            console.log("hi>>>>>",mentee_id);
             const data = await this.bidService.getBidsByMenteeId(mentee_id);
             console.log(data);
             response.status(statusConstant.success).send(data);
@@ -90,9 +108,9 @@ module.exports = class BidController {
         console.log("Controller->bid.controller.js->updateBid");
 
         try {
-            const { id } = request.params;
+            const { bidId } = request.params;
             const data = request.body;
-            const updatedBid = await this.bidService.updateBidStatus(id, data);
+            const updatedBid = await this.bidService.updateBidStatus(bidId, data);
             console.log(updatedBid);
             response.status(statusConstant.success).send(updatedBid);
         } catch (error) {

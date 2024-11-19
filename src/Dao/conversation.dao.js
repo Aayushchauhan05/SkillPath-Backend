@@ -8,6 +8,16 @@ module.exports = class ConversationDao {
     async createConversation(body) {
         return this.model.create(body);
     }
+    async findConversation(query) {
+        return await this.model.findOne(query);
+    }
+    async upsertConversation({ userId, conversation }) {
+        return this.model.updateOne(
+          { userId }, 
+          { $addToSet: { conversation: { $each: conversation } } }, 
+          { upsert: true } 
+        );
+      }
 
     async updateConversation(conversationId, update) {
         return this.model.findByIdAndUpdate(conversationId, update, { new: true });

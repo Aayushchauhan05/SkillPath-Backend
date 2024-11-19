@@ -18,6 +18,6 @@ route.delete(DELETE_BID, bidController.deleteBid);
 route.get(GET_BID, bidController.getBidById);
 route.get(GET_BIDS_BY_MENTOR, bidController.getBidsByMentor);
 route.get(GET_BIDS_BY_MENTEE, bidController.getBidsByMentee);
-// route.get(GET_BIDS_BY_LISTING, bidController.);
+route.get(GET_BIDS_BY_LISTING, bidController.getBidsByListing);
 
 module.exports = route;
