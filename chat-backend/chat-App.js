@@ -9,6 +9,7 @@ const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    transports: ["websocket", "polling"],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   },
