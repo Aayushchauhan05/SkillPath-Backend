@@ -16,6 +16,10 @@ module.exports = class UserController {
             if (error.message === "User Already Exists") {
                 return res.status(alreadyExist).send({ message: "User already exists" });
             }
+            if(error.errmsg.includes("E11000 duplicate key error collection: test.users index: username_1 dup key")) {
+                return res.status(alreadyExist).send({ message: "UserName already exists" });
+            }
+            
             return res.status(serverError).send({ message: "Internal server error" });
         }
     }
