@@ -43,7 +43,7 @@ oAuth2Client.setCredentials({
 });
 
 
-await oAuth2Client.getAccessToken();
+// await oAuth2Client.getAccessToken();
 
 const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
