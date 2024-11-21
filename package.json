@@ -20,6 +20,9 @@
   "scripts": {
     "start": "node App.js",
     "build": "echo 'No build step required'"
-  }
+  },
+  "engines": {
+  "node": "16.x"
+}
  
 }
