@@ -30,14 +30,13 @@ const tokens = typeof eventData.tokens === 'string'
       ? JSON.parse(eventData.tokens) 
       : eventData.tokens;
       console.log(tokens);
-if (!tokens || !tokens.access_token || !tokens.refresh_token) {
+if (!tokens || !tokens.access_token ) {
   throw new Error("Missing access_token or refresh_token in the provided tokens.");
 }
 
 
 oAuth2Client.setCredentials({
   access_token: tokens.access_token,
-  refresh_token: tokens.refresh_token,
   scope: tokens.scope,
   token_type: tokens.token_type,
   expiry_date: tokens.expiry_date,
