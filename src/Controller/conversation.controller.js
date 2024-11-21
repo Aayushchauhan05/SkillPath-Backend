@@ -16,7 +16,7 @@ module.exports = class ConversationController {
 
             const conversationData = request.body;
             const data = await this.conversationService.createConversation(userId, conversationData);
-            console.log(data);
+            
             response.status(statusConstant.created).send(data);
         } catch (error) {
             console.log(error);
@@ -35,7 +35,7 @@ module.exports = class ConversationController {
         try {
             const { user_id } = request.params;
             const data = await this.conversationService.getConversationsByUserId(user_id);
-            console.log(data);
+           ;
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -54,7 +54,7 @@ module.exports = class ConversationController {
         try {
             const { conversationId } = request.params;
             const data = await this.conversationService.getConversationById(conversationId);
-            console.log(data);
+           
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -73,7 +73,7 @@ module.exports = class ConversationController {
         try {
             const { user_id, conversation_id } = request.body;
             const data = await this.conversationService.addConversationToUser(user_id, conversation_id);
-            console.log(data);
+            
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -92,7 +92,7 @@ module.exports = class ConversationController {
         try {
             const { conversationId } = request.params;
             const data = await this.conversationService.deleteConversation(conversationId);
-            console.log(data);
+           
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);

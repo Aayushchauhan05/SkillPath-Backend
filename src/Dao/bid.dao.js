@@ -8,11 +8,11 @@ module.exports = class BidDao {
   }
 
   async getBidById(id) {
-    return this.model.findById(id).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.findById(id).populate("mentorId").populate("menteeId").populate("listingId");
   }
 
   async getAllBids() {
-    return this.model.find().populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.find().populate("mentorId").populate("menteeId").populate("listingId");
   }
 
   async updateBid(id, data) {
@@ -25,14 +25,14 @@ module.exports = class BidDao {
 
   async getBidsByMentorId(mentorId) {
     
-    return this.model.find({ mentorId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.find({ mentorId }).populate("mentorId").populate("menteeId").populate("listingId")
   }
   async getBidsByMenteeId(menteeId) {
     console.log(menteeId)
     if (!menteeId || menteeId.trim() === '') {
       throw new Error("Invalid menteeId format");
   }
-    return this.model.find({menteeId:menteeId}).populate("mentorId").populate("menteeId").populate("meetId");
+    return this.model.find({menteeId:menteeId}).populate("mentorId").populate("menteeId");
   }
   async getBidsByListingId(listingId) {
     return this.model
@@ -46,15 +46,15 @@ module.exports = class BidDao {
       .populate("mentorId")
       .populate("menteeId")
       .populate("listingId")
-      .populate("meetId");
+      
   }
   
   async getBidsByBidId(bidId) {
-    return this.model.find({ bidId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.find({ bidId }).populate("mentorId").populate("menteeId").populate("listingId")
   }
 
   async getBidByMentorAndBid(mentorId, bidId) {
-    return this.model.findOne({ mentorId, bidId }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.findOne({ mentorId, bidId }).populate("mentorId").populate("menteeId").populate("listingId");
   }
 
   async updateMeetId(id, meetId) {
@@ -62,10 +62,10 @@ module.exports = class BidDao {
   }
 
   async getBidsByTopic(topic) {
-    return this.model.find({ topic }).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.find({ topic }).populate("mentorId").populate("menteeId").populate("listingId");
   }
 
   async getBidDetails(id) {
-    return this.model.findById(id).populate("mentorId").populate("menteeId").populate("listingId").populate("meetId");
+    return this.model.findById(id).populate("mentorId").populate("menteeId").populate("listingId");
   }
 };

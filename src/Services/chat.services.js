@@ -10,7 +10,7 @@ module.exports = class ChatServices {
         if (!body || !body.senderId || !body.receiverId || !body.message) {
             throw new Error('Invalid data for creating a chat');
         }
-        console.log(body);
+       
         const chat = await this.chatDao.createChat(body);
     
        

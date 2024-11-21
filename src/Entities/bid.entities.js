@@ -42,9 +42,8 @@ type: String,
     type: Number,
     required: true,
   },
-  meetId:{
+  meetLink:{
     type:String,
-    ref:"chat"
   },
   status:{
 type:String,

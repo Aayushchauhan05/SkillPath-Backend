@@ -12,11 +12,11 @@ module.exports= class MeetController{
 
         try {
             const {mentorId,menteeId,code,tokens}=request.query;
-            console.log({mentorId,menteeId,code})
+            
             const eventData=request.body;
             const data= await this.meetService.createMeet(mentorId,menteeId,{...eventData,code,tokens
 })
-            console.log(data)
+           
             response.status(statusConstant.created).send(data)
         } catch (error) {
             console.log(error)
@@ -39,7 +39,7 @@ module.exports= class MeetController{
         try {
             const {mentor_id}=request.params;
            const data= await this.meetService.getMeetsByMentorId(mentor_id);
-            console.log(data)
+          
             response.status(statusConstant.success).send(data)
         } catch (error) {
             console.log(error)

@@ -12,11 +12,11 @@ module.exports = class BidController {
 
         try {
             const { mentorId, bidId } = request.query;
-            console.log({ mentorId, bidId });
+           
 
             const eventData = request.body;
             const data = await this.bidService.createBid(mentorId, bidId, eventData);
-            console.log(data);
+            
             response.status(statusConstant.created).send(data);
         } catch (error) {
             console.log(error);
@@ -37,7 +37,7 @@ module.exports = class BidController {
         try {
             const { mentor_id } = request.params;
             const data = await this.bidService.getBidsByMentorId(mentor_id);
-            console.log(data);
+         
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -54,7 +54,7 @@ module.exports = class BidController {
         try {
             const { listing_id } = request.params;
             const data = await this.bidService.getBidsByListingId(listing_id);
-            console.log(data);
+            
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -72,7 +72,7 @@ module.exports = class BidController {
             const {mentee_id} = request.params;
             console.log("hi>>>>>",mentee_id);
             const data = await this.bidService.getBidsByMenteeId(mentee_id);
-            console.log(data);
+          
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -91,7 +91,7 @@ module.exports = class BidController {
         try {
             const { id } = request.params;
             const data = await this.bidService.getBidById(id);
-            console.log(data);
+          
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);
@@ -111,7 +111,7 @@ module.exports = class BidController {
             const { bidId } = request.params;
             const data = request.body;
             const updatedBid = await this.bidService.updateBidStatus(bidId, data);
-            console.log(updatedBid);
+           
             response.status(statusConstant.success).send(updatedBid);
         } catch (error) {
             console.log(error);
@@ -149,7 +149,7 @@ module.exports = class BidController {
         try {
             const { topic } = request.params;
             const data = await this.bidService.getBidsByTopic(topic);
-            console.log(data);
+            
             response.status(statusConstant.success).send(data);
         } catch (error) {
             console.log(error);

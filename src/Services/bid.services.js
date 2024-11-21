@@ -1,6 +1,7 @@
 const bidDao = require("../Dao/bid.dao");
 const ConversationDao = require("../Dao/conversation.dao");
 const userDao = require("../Dao/user.dao");
+const { updateMeetingStatus } = require("../utils/MeetingMail");
 
 module.exports = class BidServices {
     constructor() {
@@ -37,6 +38,7 @@ module.exports = class BidServices {
     }
 
     async updateBidStatus(id, data) {
+      
         if (data.status === "accepted") {
             const mentorToMenteeConversation = await this.conversationDao.findConversation({
                 userId: data.mentorId,
@@ -63,11 +65,14 @@ module.exports = class BidServices {
                 };
                 await this.conversationDao.upsertConversation(menteeToMentor);
             }
+            
         }
         const updatedBid = await this.bidDao.updateBid(id, data);
         if (!updatedBid) {
             throw new Error("Bid not found");
         }
+        if(data.status === "accepted") updateMeetingStatus("accepted",updatedBid.name,updatedBid.email);
+        if(data.status === "rejected") updateMeetingStatus("rejected",updatedBid.name,updatedBid.email);
     
         return updatedBid;
     }
