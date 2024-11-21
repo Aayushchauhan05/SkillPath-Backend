@@ -40,9 +40,16 @@ app.get("/", (req, res) => {
     }
   });
 
+  console.log('Starting app...');
+  console.log('Express version:', require('express/package.json').version);
+  
+
 connectDb().then(() => {
     server.listen(BACKEND_PORT, () => {
         console.log(`Server is connected on port ${BACKEND_PORT}`);
+        console.log('Starting app...');
+console.log('Express version:', require('express/package.json').version);
+
     });
 }).catch((error) => {
     console.log("Internal server error due to connection failure:", error);
