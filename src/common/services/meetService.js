@@ -29,7 +29,7 @@ async function createMeeting(eventData) {
 const tokens = typeof eventData.tokens === 'string' 
       ? JSON.parse(eventData.tokens) 
       : eventData.tokens;
-      
+      console.log(tokens);
 if (!tokens || !tokens.access_token || !tokens.refresh_token) {
   throw new Error("Missing access_token or refresh_token in the provided tokens.");
 }
