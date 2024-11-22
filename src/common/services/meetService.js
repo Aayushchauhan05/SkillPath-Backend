@@ -21,44 +21,8 @@ function getAuthUrl() {
 
 async function getAuthClient(code) {
   const { tokens } = await oAuth2Client.getToken(code);
-  console.log("New tokens received:", {
-    access_token: tokens.access_token ? "present" : "missing",
-    expiry_date: tokens.expiry_date,
-    token_type: tokens.token_type
-  });
   oAuth2Client.setCredentials(tokens);
   return oAuth2Client;
-}
-
-function getCurrentTimestamp() {
-  return Math.floor(Date.now());
-}
-
-async function validateToken(tokens) {
-  if (!tokens || !tokens.access_token) {
-    throw new Error("No access token provided");
-  }
-
-  const currentTime = getCurrentTimestamp();
-  // Ensure expiry_date is properly formatted
-  const expiryDate = typeof tokens.expiry_date === 'string' 
-    ? parseInt(tokens.expiry_date) 
-    : tokens.expiry_date;
-
-  // Debug timestamp information
-  console.log("Detailed token timing:", {
-    currentTimeRaw: Date.now(),
-    currentTimeFormatted: new Date(currentTime).toISOString(),
-    expiryDateFormatted: new Date(expiryDate).toISOString(),
-    timeDifference: Math.floor((expiryDate - currentTime) / 1000) + " seconds"
-  });
-
-  if (!expiryDate) {
-    // If no expiry date, assume token is valid
-    return true;
-  }
-
-  return true; // Temporarily disable token validation
 }
 
 async function createMeeting(eventData) {
@@ -74,19 +38,32 @@ async function createMeeting(eventData) {
       currentTime: new Date().toISOString()
     });
 
-    // Temporarily skip token validation
-    // await validateToken(tokens);
+    // Create a new OAuth2Client instance for this request
+    const authClient = new OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      redirectUri
+    );
+
+    // Set only the access token
+    authClient.setCredentials({
+      access_token: tokens.access_token,
+      token_type: 'Bearer'
+    });
 
     const calendar = google.calendar({ 
       version: 'v3', 
-      auth: new google.auth.GoogleAuth({
-        credentials: {
-          access_token: tokens.access_token,
-          token_type: "Bearer"
-        },
-        scopes: SCOPES
-      })
+      auth: authClient 
     });
+
+    try {
+      // Test the credentials with a simple API call
+      await calendar.calendarList.list();
+      console.log("Calendar API access verified");
+    } catch (error) {
+      console.error("Calendar API access test failed:", error.message);
+      throw new Error("Failed to access Calendar API - please re-authenticate");
+    }
 
     const response = await calendar.events.insert({
       calendarId: "primary",
@@ -120,10 +97,20 @@ async function createMeeting(eventData) {
       response: error.response?.data
     });
 
-    if (error.response?.data?.error?.message) {
-      throw new Error(error.response.data.error.message);
+    // Handle specific Google API errors
+    if (error.response?.data?.error) {
+      const googleError = error.response.data.error;
+      if (googleError.code === 401) {
+        throw new Error("Authentication failed - please re-authenticate");
+      }
+      throw new Error(googleError.message);
     }
-    
+
+    // Handle other errors
+    if (error.message.includes('invalid_grant')) {
+      throw new Error("Invalid credentials - please re-authenticate");
+    }
+
     throw error;
   }
 }
