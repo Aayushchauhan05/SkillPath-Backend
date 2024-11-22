@@ -11,8 +11,9 @@ const oAuth2Client = new OAuth2(
   redirectUri
 );
 
- function getAuthUrl() {
+function getAuthUrl() {
   return oAuth2Client.generateAuthUrl({
+    // Change to 'online' since we don't need refresh token
     access_type: "online",
     scope: SCOPES,
   });
@@ -25,53 +26,55 @@ async function getAuthClient(code) {
 }
 
 async function createMeeting(eventData) {
-
-const tokens = typeof eventData.tokens === 'string' 
+  try {
+    const tokens = typeof eventData.tokens === 'string' 
       ? JSON.parse(eventData.tokens) 
       : eventData.tokens;
-      console.log(tokens);
-if (!tokens || !tokens.access_token ) {
-  throw new Error("Missing access_token or refresh_token in the provided tokens.");
-}
 
+    if (!tokens || !tokens.access_token) {
+      throw new Error("Missing access token in the provided tokens.");
+    }
 
-oAuth2Client.setCredentials({
-  access_token: tokens.access_token,
-  scope: tokens.scope,
-  token_type: tokens.token_type,
-  expiry_date: tokens.expiry_date,
-});
+    // Set only the necessary credentials without refresh token
+    oAuth2Client.setCredentials({
+      access_token: tokens.access_token,
+      expiry_date: tokens.expiry_date,
+    });
 
+    const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
-// await oAuth2Client.getAccessToken();
-
-const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
-
-  const response = await calendar.events.insert({
-    calendarId: "primary",
-    requestBody: {
-      summary: eventData.summary,
-      description: eventData.description,
-      start: {
-        dateTime: new Date(eventData.startDate).toISOString(),
-        timeZone: "America/Los_Angeles",
-      },
-      end: {
-        dateTime: new Date(eventData.endDate).toISOString(),
-        timeZone: "America/Los_Angeles",
-      },
-      conferenceData: {
-        createRequest: {
-          requestId: v4(),
-          conferenceSolutionKey: { type: "hangoutsMeet" },
+    const response = await calendar.events.insert({
+      calendarId: "primary",
+      requestBody: {
+        summary: eventData.summary,
+        description: eventData.description,
+        start: {
+          dateTime: new Date(eventData.startDate).toISOString(),
+          timeZone: "America/Los_Angeles",
         },
+        end: {
+          dateTime: new Date(eventData.endDate).toISOString(),
+          timeZone: "America/Los_Angeles",
+        },
+        conferenceData: {
+          createRequest: {
+            requestId: v4(),
+            conferenceSolutionKey: { type: "hangoutsMeet" },
+          },
+        },
+        attendees: eventData.attendees,
       },
-      attendees: eventData.attendees,
-    },
-    conferenceDataVersion: 1,
-  });
+      conferenceDataVersion: 1,
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    // Add better error handling
+    if (error.message.includes('invalid_grant') || error.message.includes('No refresh token is set')) {
+      throw new Error('Access token expired. User needs to re-authenticate.');
+    }
+    throw error;
+  }
 }
 
 module.exports = {
