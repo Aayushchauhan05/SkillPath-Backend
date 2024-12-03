@@ -22,11 +22,11 @@ const meetSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  start: {
+ startDate: {
    type: Date,
       
   },
-  end: {
+  endDate: {
    type: Date,
       
   },

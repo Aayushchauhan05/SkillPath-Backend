@@ -45,6 +45,14 @@ type: String,
   meetLink:{
     type:String,
   },
+  startDate: {
+    type: Date,
+       
+   },
+   endDate: {
+    type: Date,
+       
+   },
   status:{
 type:String,
 default:"pending"
