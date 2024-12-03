@@ -27,6 +27,7 @@ module.exports = class MeetServices {
             ...eventData,
             tokens:"",
             code:""
+            
         });
     
         return {

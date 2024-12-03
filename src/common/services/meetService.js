@@ -38,14 +38,14 @@ async function createMeeting(eventData) {
       currentTime: new Date().toISOString()
     });
 
-    // Create a new OAuth2Client instance for this request
+    
     const authClient = new OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
       redirectUri
     );
 
-    // Set only the access token
+   
     authClient.setCredentials({
       access_token: tokens.access_token,
       token_type: 'Bearer'
@@ -57,7 +57,7 @@ async function createMeeting(eventData) {
     });
 
     try {
-      // Test the credentials with a simple API call
+      
       await calendar.calendarList.list();
       console.log("Calendar API access verified");
     } catch (error) {
@@ -97,7 +97,7 @@ async function createMeeting(eventData) {
       response: error.response?.data
     });
 
-    // Handle specific Google API errors
+    
     if (error.response?.data?.error) {
       const googleError = error.response.data.error;
       if (googleError.code === 401) {
@@ -106,7 +106,7 @@ async function createMeeting(eventData) {
       throw new Error(googleError.message);
     }
 
-    // Handle other errors
+   
     if (error.message.includes('invalid_grant')) {
       throw new Error("Invalid credentials - please re-authenticate");
     }
